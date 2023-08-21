@@ -68,7 +68,7 @@ const getItems = (items) => {
       title: item.title,
       price: {
         currency: item.currency_id,
-        amount: formatLocalPrice(item.price),
+        amount: item.price,
         decimals: formatPrice(item.price).decimals,
       },
       picture: item.thumbnail,
@@ -86,7 +86,7 @@ const formatItemValues = (product, description) => {
   productFormat.title = product.title;
   productFormat.price = {
     currency: product.currency_id,
-    amount: formatLocalPrice(product.price),
+    amount: product.price,
     decimals: formatPrice(product.price).decimals,
   };
 
@@ -103,19 +103,11 @@ const formatItemValues = (product, description) => {
   return productFormat;
 };
 
-/* const formatNumber = (number) => {
-  const regex = /(\d)(?=(\d{3})+(?!\d))/g;
-  return number.toString().replace(regex, "$1.");
-}; */
-const formatLocalPrice = (price) => numeral(price).format("$ 0.[00]");
-
 const formatPrice = (price) => {
   const priceString = price.toString();
-  //const entirePart = priceString.split(".")[0];
   const decimals = priceString.split(".")[1] ? priceString.split(".")[1] : 0;
 
   return {
-    //entirePart: entirePart,
     decimals: decimals,
   };
 };
