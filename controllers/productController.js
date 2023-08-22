@@ -5,6 +5,15 @@ const numeral = require("numeral");
 const apiUrl = process.env.API_URL;
 const limitProducts = 4;
 
+/**
+ * @param {string} searchValue - Search value
+ * @param {Object} res - Response
+ * @returns {Object} Products
+ * @returns {Object} Products.author
+ * @returns {Array} Products.categories
+ * @returns {Array} Products.items
+ *
+ */
 exports.getProducts = (searchValue, res) => {
   axios
     .get(
@@ -18,6 +27,15 @@ exports.getProducts = (searchValue, res) => {
     });
 };
 
+/**
+ * @param {string} productId - Product id
+ * @param {Object} res - Response
+ * @returns {Object} Product
+ * @returns {Object} Product.author
+ * @returns {Object} Product.item
+ * @returns {Array} Product.categories
+ *
+ */
 exports.getProductDetails = (productId, res) => {
   const detailResponse = {};
   axios
@@ -43,6 +61,15 @@ exports.getProductDetails = (productId, res) => {
     );
 };
 
+/**
+ *
+ * @param {*} response - Response from API
+ * @returns {Object} Products
+ * @returns {Object} Products.author
+ * @returns {Array} Products.categories
+ * @returns {Array} Products.items
+ *
+ */
 function formatProducts(response) {
   const productsFormat = {};
   productsFormat.author = getAuthor();
@@ -51,6 +78,11 @@ function formatProducts(response) {
   return productsFormat;
 }
 
+/**
+ * @param {Array} filters - Filters from API
+ * @returns {Array} Categories
+ *
+ */
 const getCategories = ([firstFilter]) => {
   let categories = [];
   if (!!firstFilter.id && firstFilter.id == "category") {
@@ -61,6 +93,23 @@ const getCategories = ([firstFilter]) => {
   return categories;
 };
 
+/**
+ * @param {Array} items - Items from API
+ * @returns {Array} Items
+ * @returns {string} Items.id
+ * @returns {string} Items.title
+ * @returns {Object} Items.price
+ * @returns {string} Items.price.currency
+ * @returns {number} Items.price.amount
+ * @returns {number} Items.price.decimals
+ * @returns {string} Items.picture
+ * @returns {string} Items.condition
+ * @returns {boolean} Items.free_shipping
+ * @returns {string} Items.address
+ * @returns {string} Items.sold_quantity
+ * @returns {string} Items.description
+ *
+ */
 const getItems = (items) => {
   return items.map((item) => {
     return {
@@ -79,6 +128,23 @@ const getItems = (items) => {
   });
 };
 
+/**
+ * @param {Object} product - Product from API
+ * @param {Object} description - Description from API
+ * @returns {Object} Product
+ * @returns {string} Product.id
+ * @returns {string} Product.title
+ * @returns {Object} Product.price
+ * @returns {string} Product.price.currency
+ * @returns {number} Product.price.amount
+ * @returns {number} Product.price.decimals
+ * @returns {string} Product.picture
+ * @returns {string} Product.condition
+ * @returns {boolean} Product.free_shipping
+ * @returns {string} Product.sold_quantity
+ * @returns {string} Product.description
+ *
+ */
 const formatItemValues = (product, description) => {
   const productFormat = {};
 
@@ -89,11 +155,9 @@ const formatItemValues = (product, description) => {
     amount: product.price,
     decimals: formatPrice(product.price).decimals,
   };
-
   if (product.pictures.length) {
     productFormat.picture = product.pictures[0].secure_url;
   }
-
   productFormat.condition =
     product.condition === "new" ? constants.NEW : constants.USED;
   productFormat.free_shipping = product.shipping.free_shipping;
@@ -111,5 +175,13 @@ const formatPrice = (price) => {
     decimals: decimals,
   };
 };
+
+/**
+ *
+ * @returns {Object} Author
+ * @returns {string} Author.name
+ * @returns {string} Author.lastname
+ *
+ */
 
 const getAuthor = () => ({ name: "Joaquin", lastname: "Solis" });
